@@ -1,0 +1,24 @@
+node('built-in') {
+    
+    stage('Continuous Download') {
+   git 'https://github.com/intelliqittrainings/maven.git'
+}
+
+stage('Continuous Build') {
+    sh 'mvn package'
+}
+
+stage('Continuous Deployment') {
+
+deploy adapters: [tomcat9(credentialsId: '36ca5c8f-fdcb-4bc1-9164-23488377cdb9', path: '', url: 'http://172.31.34.142:8080/')], contextPath: 'testapp', war: '**/*.war'
+}
+
+
+
+stage('Continuous Testing') {
+    git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
+    sh 'java -jar /var/lib/jenkins/workspace/scriptedpipeline/testing.jar'
+    
+}
+
+}
